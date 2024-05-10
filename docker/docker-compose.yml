@@ -1,0 +1,37 @@
+version: '1.0'
+
+name: webnode-test
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: database
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+    env_file:
+      - ./../.env
+    volumes: 
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+  server:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    container_name: app-server
+    env_file:
+      - ./../.env
+    volumes: 
+      - server:/var/lib/server/data
+    ports:
+      - '4000:3333'
+
+volumes:
+  postgres:
+    name: volume-postgres
+    external: true
+  server:
+    name: volume-server
+    external: true
